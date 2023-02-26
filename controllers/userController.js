@@ -1,8 +1,9 @@
 const User = require("../models/userModel");
+const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 
 // Sign Up
-const register = async (req, res) => {
+const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -32,10 +33,10 @@ const register = async (req, res) => {
     res.status(400);
     throw new Error("Invalid user data");
   }
-};
+});
 
 // User Login
-const logIn = async (req, res) => {
+const logIn = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -46,10 +47,10 @@ const logIn = async (req, res) => {
     res.status(400);
     throw new Error("Invalid Credentials");
   }
-};
+});
 
 // User Delete
-const deleteUser = async (req, res) => {
+const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -60,14 +61,14 @@ const deleteUser = async (req, res) => {
   await user.remove();
 
   res.status(200).json({ message: "Deleted User", id: req.params.id });
-};
+});
 
 // Get All User
-const getUsers = async (req, res) => {
-  const users = await User.find(req.body.name);
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find(req.body);
 
   res.status(200).json(users);
-};
+});
 
 module.exports = {
   register,
